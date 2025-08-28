@@ -21,6 +21,7 @@ import {
 } from "@/components/ui/select";
 import { Calendar } from "@/components/ui/calendar";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
+import { TimePicker } from "@/components/ui/time-picker";
 import { CalendarIcon, Save, X, Loader2 } from "lucide-react";
 import { format } from "date-fns";
 import { cn } from "@/lib/utils";
@@ -33,6 +34,7 @@ interface EditTodoFormProps {
     title: string;
     description?: string;
     dueDate?: string;
+    dueTime?: string;
     priority: "low" | "medium" | "high";
     completed: boolean;
   };
@@ -43,6 +45,15 @@ interface EditTodoFormProps {
 export function EditTodoForm({ todo, onSave, onCancel }: EditTodoFormProps) {
   const { updateTodo, loading } = useTodoStore();
 
+  // Parse existing time if available
+  const parseTimeToDate = (timeStr?: string): Date | undefined => {
+    if (!timeStr) return undefined;
+    const [hours, minutes] = timeStr.split(':').map(Number);
+    const date = new Date();
+    date.setHours(hours, minutes, 0, 0);
+    return date;
+  };
+
   const form = useForm<TodoFormValues>({
     resolver: zodResolver(todoSchema),
     defaultValues: {
@@ -50,6 +61,7 @@ export function EditTodoForm({ todo, onSave, onCancel }: EditTodoFormProps) {
       description: todo.description || "",
       priority: todo.priority,
       dueDate: todo.dueDate ? new Date(todo.dueDate) : undefined,
+      dueTime: parseTimeToDate(todo.dueTime),
     },
   });
 
@@ -57,6 +69,7 @@ export function EditTodoForm({ todo, onSave, onCancel }: EditTodoFormProps) {
     await updateTodo(todo.id, {
       ...values,
       dueDate: values.dueDate ? values.dueDate.toISOString() : undefined,
+      dueTime: values.dueTime ? format(values.dueTime, "HH:mm") : undefined,
     });
     
     if (!loading) {
@@ -196,6 +209,28 @@ export function EditTodoForm({ todo, onSave, onCancel }: EditTodoFormProps) {
               )}
             />
           </div>
+
+          {/* Time Picker - only show if date is selected */}
+          {form.watch("dueDate") && (
+            <FormField
+              control={form.control}
+              name="dueTime"
+              render={({ field }) => (
+                <FormItem className="flex flex-col">
+                  <FormLabel>Due Time (optional)</FormLabel>
+                  <FormControl>
+                    <TimePicker
+                      value={field.value}
+                      onChange={field.onChange}
+                      disabled={loading}
+                      placeholder="Select time"
+                    />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+          )}
           
           <div className="flex flex-col sm:flex-row gap-2 pt-2">
             <Button type="submit" size="sm" disabled={loading} className="flex-1 sm:flex-initial">

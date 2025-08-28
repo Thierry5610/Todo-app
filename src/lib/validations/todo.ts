@@ -7,6 +7,7 @@ export const todoSchema = z.object({
   priority: z.enum(["low", "medium", "high"]),
   project: z.string().default("Default"),
   dueDate: z.date().optional(),
+  dueTime: z.date().optional(), // This will hold the time component
   completed: z.boolean().default(false),
 })
 

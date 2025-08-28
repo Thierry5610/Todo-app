@@ -1,7 +1,7 @@
 // src/stores/useTodoStore.ts
 import { create } from 'zustand'
 import { persist } from 'zustand/middleware'
-import { isToday, isThisWeek, parseISO } from 'date-fns'
+import { isToday, isThisWeek, parseISO, isBefore } from 'date-fns'
 import { toast } from 'sonner'
 
 interface Todo {
@@ -10,6 +10,7 @@ interface Todo {
   description?: string
   completed: boolean
   dueDate?: string 
+  dueTime?: string // New field for time
   priority: 'low' | 'medium' | 'high'
   project: string
   createdAt: string
@@ -40,6 +41,19 @@ interface TodoStore {
 
 // Simulate API delay
 const simulateDelay = () => new Promise(resolve => setTimeout(resolve, Math.random() * 1000 + 500))
+
+// Helper function to combine date and time
+const combineDateAndTime = (dateStr: string, timeStr?: string): Date => {
+  const date = parseISO(dateStr);
+  if (timeStr) {
+    const [hours, minutes] = timeStr.split(':').map(Number);
+    date.setHours(hours, minutes, 0, 0);
+  } else {
+    // Default to end of day if no time specified (23:59)
+    date.setHours(23, 59, 59, 999);
+  }
+  return date;
+};
 
 export const useTodoStore = create<TodoStore>()(
   persist(
@@ -163,7 +177,9 @@ export const useTodoStore = create<TodoStore>()(
         return get().todos.filter(todo => {
           if (!todo.dueDate || todo.completed) return false
           try {
-            return parseISO(todo.dueDate) < now
+            // Combine date and time for accurate overdue comparison
+            const dueDateTime = combineDateAndTime(todo.dueDate, todo.dueTime)
+            return isBefore(dueDateTime, now)
           } catch {
             return false
           }

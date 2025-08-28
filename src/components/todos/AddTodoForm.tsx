@@ -21,6 +21,7 @@ import {
 } from "@/components/ui/select";
 import { Calendar } from "@/components/ui/calendar";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
+import { TimePicker } from "@/components/ui/time-picker";
 import { CalendarIcon, Plus, Loader2 } from "lucide-react";
 import { format } from "date-fns";
 import { cn } from "@/lib/utils";
@@ -49,6 +50,7 @@ export function AddTodoForm({ onSuccess }: AddTodoFormProps) {
     const todoToAdd = {
       ...values,
       dueDate: values.dueDate ? values.dueDate.toISOString() : undefined,
+      dueTime: values.dueTime ? format(values.dueTime, "HH:mm") : undefined,
     };
     
     await addTodo(todoToAdd);
@@ -190,6 +192,28 @@ export function AddTodoForm({ onSuccess }: AddTodoFormProps) {
             )}
           />
         </div>
+
+        {/* Time Picker - only show if date is selected */}
+        {form.watch("dueDate") && (
+          <FormField
+            control={form.control}
+            name="dueTime"
+            render={({ field }) => (
+              <FormItem className="flex flex-col">
+                <FormLabel>Due Time (optional)</FormLabel>
+                <FormControl>
+                  <TimePicker
+                    value={field.value}
+                    onChange={field.onChange}
+                    disabled={loading}
+                    placeholder="Select time"
+                  />
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+        )}
         
         <Button type="submit" className="w-full" disabled={loading}>
           {loading ? (

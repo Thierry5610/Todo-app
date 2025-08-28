@@ -12,7 +12,7 @@ import {
 import { Trash2, Calendar, Edit, MoreVertical, Clock } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { useTodoStore } from "@/stores/useTodoStore";
-import { format, isToday, isPast, parseISO } from "date-fns";
+import { format, isToday, isPast, parseISO, isBefore } from "date-fns";
 import { EditTodoForm } from "./EditTodoForm";
 
 interface TodoItemProps {
@@ -20,6 +20,7 @@ interface TodoItemProps {
   title: string;
   description?: string;
   dueDate?: string;
+  dueTime?: string;
   priority: "low" | "medium" | "high";
   completed: boolean;
   project?: string;
@@ -30,6 +31,7 @@ export function TodoItem({
   title, 
   description, 
   dueDate, 
+  dueTime,
   priority, 
   completed, 
   project = "Default" 
@@ -49,13 +51,49 @@ export function TodoItem({
     high: "border-l-red-500",
   };
 
-  // Date status
-  const dateStatus = dueDate ? (() => {
+  // Helper function to combine date and time for accurate status
+  const combineDateAndTime = (dateStr: string, timeStr?: string): Date => {
+    const date = parseISO(dateStr);
+    if (timeStr) {
+      const [hours, minutes] = timeStr.split(':').map(Number);
+      date.setHours(hours, minutes, 0, 0);
+    } else {
+      // Default to end of day if no time specified (23:59)
+      date.setHours(23, 59, 59, 999);
+    }
+    return date;
+  };
+
+  // Date and time status
+  const dateTimeStatus = dueDate ? (() => {
     try {
-      const due = parseISO(dueDate);
-      if (isToday(due)) return { text: "Due today", variant: "default" as const, urgent: true };
-      if (isPast(due) && !completed) return { text: "Overdue", variant: "destructive" as const, urgent: true };
-      return { text: format(due, "MMM dd"), variant: "secondary" as const, urgent: false };
+      const dueDateTime = combineDateAndTime(dueDate, dueTime);
+      const now = new Date();
+      
+      if (isToday(parseISO(dueDate))) {
+        if (dueTime && isBefore(dueDateTime, now) && !completed) {
+          return { text: `Overdue (${format(dueDateTime, "h:mm a")})`, variant: "destructive" as const, urgent: true };
+        }
+        return { 
+          text: dueTime ? `Due today at ${format(dueDateTime, "h:mm a")}` : "Due today", 
+          variant: "default" as const, 
+          urgent: true 
+        };
+      }
+      
+      if (isBefore(dueDateTime, now) && !completed) {
+        return { 
+          text: dueTime ? `Overdue (${format(parseISO(dueDate), "MMM dd")} ${format(dueDateTime, "h:mm a")})` : "Overdue", 
+          variant: "destructive" as const, 
+          urgent: true 
+        };
+      }
+      
+      return { 
+        text: dueTime ? `${format(parseISO(dueDate), "MMM dd")} at ${format(dueDateTime, "h:mm a")}` : format(parseISO(dueDate), "MMM dd"), 
+        variant: "secondary" as const, 
+        urgent: false 
+      };
     } catch {
       return null;
     }
@@ -64,7 +102,7 @@ export function TodoItem({
   if (isEditing) {
     return (
       <EditTodoForm
-        todo={{ id, title, description, dueDate, priority, completed }}
+        todo={{ id, title, description, dueDate, dueTime, priority, completed }}
         onSave={() => setIsEditing(false)}
         onCancel={() => setIsEditing(false)}
       />
@@ -163,21 +201,21 @@ export function TodoItem({
             {priority.charAt(0).toUpperCase() + priority.slice(1)}
           </Badge>
           
-          {/* Due date */}
-          {dateStatus && (
+          {/* Due date/time */}
+          {dateTimeStatus && (
             <Badge 
-              variant={dateStatus.variant} 
+              variant={dateTimeStatus.variant} 
               className={cn(
                 "text-xs flex items-center gap-1",
-                dateStatus.urgent && "animate-pulse"
+                dateTimeStatus.urgent && "animate-pulse"
               )}
             >
-              {dateStatus.urgent ? (
+              {dateTimeStatus.urgent ? (
                 <Clock className="h-3 w-3" />
               ) : (
                 <Calendar className="h-3 w-3" />
               )}
-              {dateStatus.text}
+              {dateTimeStatus.text}
             </Badge>
           )}
           
