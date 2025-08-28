@@ -1,69 +1,86 @@
-# React + TypeScript + Vite
+# Pro Todo App
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+The **Pro Todo App** is a modern, responsive task management application designed to help users organize their daily and weekly tasks efficiently. With a clean and intuitive interface, it allows you to easily add, manage, and track your to-do items, ensuring you stay on top of your schedule.
 
-Currently, two official plugins are available:
+## ✨ Features
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Babel](https://babeljs.io/) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+* **Task Management**: Add, edit, delete, and toggle the completion status of your tasks.
 
-## Expanding the ESLint configuration
+* **Prioritization**: Assign priorities (low, medium, high) to tasks to manage your workload effectively.
 
-If you are developing a production application, we recommend updating the configuration to enable type-aware lint rules:
+* **Time-Based Views**: Organize your tasks with dedicated pages for a daily and a weekly overview.
 
-```js
-export default tseslint.config([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
+* **Dashboard**: Get a quick snapshot of your progress with an overview of total tasks, tasks due today, overdue tasks, and completed tasks.
 
-      // Remove tseslint.configs.recommended and replace with this
-      ...tseslint.configs.recommendedTypeChecked,
-      // Alternatively, use this for stricter rules
-      ...tseslint.configs.strictTypeChecked,
-      // Optionally, add this for stylistic rules
-      ...tseslint.configs.stylisticTypeChecked,
+* **Responsive Design**: The application is fully responsive and optimized for seamless use on both desktop and mobile devices.
 
-      // Other configs...
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
-```
+* **Theme Toggle**: Switch between a light and a dark theme to suit your preference.
 
-You can also install [eslint-plugin-react-x](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-x) and [eslint-plugin-react-dom](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-dom) for React-specific lint rules:
+* **State Management**: Tasks are managed in a central store, providing a smooth and consistent user experience.
 
-```js
-// eslint.config.js
-import reactX from 'eslint-plugin-react-x'
-import reactDom from 'eslint-plugin-react-dom'
+## 🚀 Technology Stack
 
-export default tseslint.config([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
-      // Enable lint rules for React
-      reactX.configs['recommended-typescript'],
-      // Enable lint rules for React DOM
-      reactDom.configs.recommended,
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
-```
+* **React**: A JavaScript library for building user interfaces.
+
+* **Zustand**: A lightweight and fast state management solution for React.
+
+* **TypeScript**: A typed superset of JavaScript that improves code quality and developer experience.
+
+* **Tailwind CSS**: A utility-first CSS framework for rapid and customizable styling.
+
+* **shadcn/ui**: A collection of reusable components built with Radix UI and Tailwind CSS.
+
+* **`date-fns`**: A comprehensive library for handling and formatting dates and times.
+
+* **`react-router-dom`**: For declarative routing within the application.
+
+* **Zod**: A TypeScript-first schema declaration and validation library for form data.
+
+## 📁 Project Structure
+
+* `src/components/`: Contains all reusable UI components, such as forms (`AddTodoForm`, `EditTodoForm`), individual todo items (`TodoItem`, `CalendarTodoItem`), and layout elements (`Layout`, `Sidebar`).
+
+* `src/pages/`: Holds the main page components of the application, including `Dashboard.tsx`, `DailyTodos.tsx`, and `WeeklyTodos.tsx`.
+
+* `src/stores/`: Houses the Zustand store (`useTodoStore.ts`) that manages the global application state and business logic for tasks.
+
+* `src/lib/`: Includes utility files, such as the Zod schema for task validation (`validations/todo.ts`) and theme provider context (`theme-provider.tsx`).
+
+* `src/App.tsx`: The entry point of the application, responsible for setting up routing and global providers.
+
+## 🛠️ Usage
+
+To get started with the project, follow these steps:
+
+1. Clone the repository:
+
+   ```bash
+   git clone [https://github.com/your-username/pro-todo-app.git](https://github.com/your-username/pro-todo-app.git)
+   cd pro-todo-app
+   ```
+
+2. Install dependencies:
+
+   ```bash
+   npm install
+   ```
+
+   or
+
+   ```bash
+   yarn install
+   ```
+
+3. Run the application:
+
+   ```bash
+   npm run dev
+   ```
+
+   or
+
+   ```bash
+   yarn dev
+   ```
+
+The application will be available at `http://localhost:5173` (or the port specified in your terminal).
