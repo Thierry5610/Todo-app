@@ -55,7 +55,7 @@ To get started with the project, follow these steps:
 1. Clone the repository:
 
    ```bash
-   git clone [https://github.com/your-username/pro-todo-app.git](https://github.com/your-username/pro-todo-app.git)
+   git clone https://github.com/Thierry5610/Todo-app.git
    cd pro-todo-app
    ```
 
