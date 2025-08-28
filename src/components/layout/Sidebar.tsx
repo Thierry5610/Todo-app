@@ -4,7 +4,7 @@ import { Button } from "@/components/ui/button";
 import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
 import { Badge } from "@/components/ui/badge";
 import { useTheme } from "@/components/theme-provider";
-import { Moon, Sun, Menu, Home, Calendar, CalendarDays, CheckCircle } from "lucide-react";
+import { Moon, Sun, Menu, Home, Calendar, CalendarDays } from "lucide-react";
 import { useNavigate, useLocation } from "react-router-dom";
 import { useTodoStore } from "@/stores/useTodoStore";
 import { cn } from "@/lib/utils";
@@ -122,24 +122,6 @@ const Sidebar = () => {
             </div>
           </div>
         </div>
-
-        {/* Projects Section - Placeholder for future expansion */}
-        <div>
-          <h2 className="text-sm font-medium text-muted-foreground mb-3">Projects</h2>
-          <div className="space-y-1">
-            <Button
-              variant="ghost"
-              className="w-full justify-start font-normal"
-            >
-              <div className="flex items-center justify-between w-full">
-                <span>Default</span>
-                <Badge variant="outline" className="text-xs">
-                  {todos.filter(t => !t.completed && t.project === "Default").length}
-                </Badge>
-              </div>
-            </Button>
-          </div>
-        </div>
       </div>
 
       <div className="p-4 border-t">
@@ -179,7 +161,7 @@ const Sidebar = () => {
             <Button
               variant="ghost"
               size="icon"
-              className="fixed top-4 left-4 z-50 lg:hidden"
+              className="fixed top-4 left-4 z-40 lg:hidden bg-background/80 backdrop-blur-sm border shadow-sm"
             >
               <Menu className="h-5 w-5" />
             </Button>

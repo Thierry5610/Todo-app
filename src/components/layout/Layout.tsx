@@ -11,7 +11,7 @@ const Layout = ({ children }: LayoutProps) => {
     <div className="flex h-screen bg-background">
       <Sidebar />
       <main className="flex-1 overflow-auto relative lg:ml-0">
-        <div className="min-h-full">
+        <div className="min-h-full pt-12 md:pt-0">
           {children}
         </div>
         <TodoDialog />
